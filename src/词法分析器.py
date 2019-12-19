@@ -6,9 +6,6 @@ from 语法树结点 import N
 
 
 class Lexme:
-    """
-    词法分析器从
-    """
     RESEVERED = {
         'if': N('if'),
         'then': N('then'),
@@ -119,12 +116,11 @@ class Lexme:
         has_exp = False
         has_pnt = False if self.__nextc != '.' else True
         has_sign = False
-        radix = ['b', 'x', 'o']
         exp = ['E', 'e']
         sign = ['+', '-']
         while True:
             self.__nextc = next(self.__itor)
-            if self.__nextc.isnumeric() or self.__nextc in radix:
+            if self.__nextc.isnumeric():
                 continue
             elif self.__nextc == '.' and not has_pnt:
                 has_pnt = True
@@ -148,13 +144,19 @@ class Lexme:
         return N('CHAR', "'{}'".format(core))
 
     def __string(self):
+        """
+        字符串匹配
+        """
         start = self.__scan.index
         while next(self.__itor) != '"':
             pass
         self.__nextc = self.__scan.current()
-        return N('STRING', self.__scan[start] + '"')
+        return N('STRING', self.__scan[start + 1], key='i')
 
     def __slash(self):
+        """
+        // 、/* 、/的识别与相应事件的执行
+        """
         tmp = self.__scan.peek()
         if tmp == '/':
             self.__scan.nextline()
@@ -170,6 +172,9 @@ class Lexme:
         return next(self)
 
     def __needpeek(self):
+        """
+        采用贪婪匹配原则识别具有相同前缀的符号，如 > 与 >=
+        """
         tmp = Lexme.CP_OP.get(self.__nextc + self.__scan.peek())
         if tmp is None:
             return Lexme.SINGLE_OP[self.__nextc]
@@ -177,9 +182,15 @@ class Lexme:
         return tmp
 
     def msg(self):
+        """
+        支持错误定位的报错方法
+        """
         return '文件：{} 行号：{}\n'.format(self.__scan.file, self.__scan.linenum)
 
     def to_statement_end(self):
+        """
+        跳转到源程序的语句结尾，并返回语句结束符 #
+        """
         while next(self.__itor) != '#':
             pass
         else:
@@ -187,5 +198,8 @@ class Lexme:
 
 
 if __name__ == '__main__':
-    for si in Lexme('source.txt'):
+    """
+    Lexme是迭代器，可通过for循环迭代
+    """
+    for si in Lexme('source.dyf'):
         print(si)

@@ -6,7 +6,8 @@ from 语法树结点 import *
 
 class Ii:
     """
-    语法制导翻译的属性文法规则，含语义动作，在初始化时指定。
+    代表了语法制导翻译中的属性文法
+    可以记录产生式的语义动作，在初始化时指定。
     """
     def __init__(self, left, right, lens, f=None):
         require_fuc(f)

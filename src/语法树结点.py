@@ -11,10 +11,11 @@ def require_fuc(func):
 
 class N:
     """
-    学习完属性文法之后认为有必要设计一个类，代表文法中的终结符和
-    非终结符，其中终结符可能具有综合属性 self.val ，如 INT,REAL
-    的 val 值就是它的字面值，非终结符的综合属性和继承属性因Python
-    的语法性质，可以动态添加，便于扩展和调试。
+    · 类 N 代表了属性文法中的终结符和非终结符。
+    · 其中终结符可能具有综合属性 self.val ，如 INT,REAL
+      的 val 值就是它的字面值。
+    · 非终结符的综合属性和继承属性因Python的语法性质，
+      可以动态添加，便于扩展和调试。
     """
 
     def __init__(self, msg, val=None, f=None, key=None):

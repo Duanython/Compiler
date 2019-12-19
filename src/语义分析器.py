@@ -63,7 +63,7 @@ class Semantics:
         if not isinstance(op.f, FunctionType):
             raise TypeError('参数op应是可执行函数或方法。')
         # 两个运算对象均为字面值
-        numlist = ['INT', 'REAL']
+        numlist = ['INT', 'REAL', 'STRING']
         if left.msg in numlist and right.msg in numlist:
             const = op(left.val, right.val)
             longname = N('REAL' if type(const) == float else 'INT', const, key='i')

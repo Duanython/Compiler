@@ -1,6 +1,7 @@
 # encoding: utf-8
 # Auther:段云飞
 # Since: 2019-11-30
+
 from 词法分析器 import Lexme
 from 语法树结点 import N
 from 产生式 import Ii
@@ -70,9 +71,9 @@ class Parser:
         (20, '+'): ('r', 7), (20, '-'): ('r', 7),
         (20, '*'): ('r', 7), (20, '/'): ('r', 7), (20, '%'): ('r', 7),
         (20, ')'): ('r', 7), (20, '#'): ('r', 7),
-        (21, '+'): ('r', 21), (21, '-'): ('r', 21),
-        (21, '*'): ('r', 21), (21, '/'): ('r', 21), (21, '%'): ('r', 21),
-        (21, ')'): ('r', 21), (21, '#'): ('r', 21), (22, '#'): ('acc',)
+        (21, '+'): ('r', 9), (21, '-'): ('r', 9),
+        (21, '*'): ('r', 9), (21, '/'): ('r', 9), (21, '%'): ('r', 9),
+        (21, ')'): ('r', 9), (21, '#'): ('r', 9), (22, '#'): ('acc',)
     }
 
     def __init__(self, file):
@@ -93,10 +94,11 @@ class Parser:
             while True:
                 # action表示分析动作
                 action = Parser.ACTION[(stack[-1][0], nextN.key)]
-                # print('分析动作 {}, 栈顶 {}{}, 符号 {}'.format(action, stack[-1][0], stack[-1][1], nextN.key))
+                print('分析动作 {}, 栈顶 {}{}, 符号 {}'.format(action, stack[-1][0], stack[-1][1], nextN.key))
                 if action[0] == 'acc':
                     # acc函数
-                    if len(stack) != 2:
+                    if len(stack) > 2:
+                        print(len(stack))
                         self.__err('自底向上规约失败，但遇到acc动作')
                     else:
                         self.complie()
@@ -114,15 +116,15 @@ class Parser:
         except KeyError:
             self.__err('LR分析表中没有指定项：(状态 {}, 余留符号 {})'.format(stack[-1][0], nextN.key))
         except StopIteration:
-            pass
+            if len(stack) > 1:
+                self.__err('源程序未遇到符号 # 就结束')
         except BaseException as e:
             self.__err(e.args[0])
         finally:
             return Parser.SEMM.quadruple_list
 
     def __err(self, errmsg):
-        self.__lex.msg()
-        print(errmsg)
+        print(self.__lex.msg(), errmsg, sep='')
 
 
 if __name__ == '__main__':
